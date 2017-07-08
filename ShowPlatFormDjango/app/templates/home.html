@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+
+  </head>
+  <body>
+
+    <div class="ui five item  menu">
+      <a class="active red item">WEB</a>
+      <a class="orange item">SSH</a>
+      <a class="yellow item">TELNET</a>
+      <a class="olive item">CMS</a>
+      <a class="green item">SHELL</a>
+    </div>
+
+<div class="ui two column grid">
+  <div class="row">
+  <div class="three wide column">
+    <div class="ui pointing vertical menu">
+      <a class="item">
+        ShowBar
+      </a>
+      <div class="item">
+        <b>ShowType</b>
+        <div class="menu">
+          <a class="active item">柱状图</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="column">
+    <div id="main" style="height:400px" class=""></div>
+  </div>
+
+
+</div>
+</div>
+
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+    <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main'));
+
+                function newFunc(getDa){
+
+                  var option = {
+                      tooltip: {
+                          show: true
+                      },
+                      legend: {
+                          data:['AttackTimes']
+                      },
+                      xAxis : [
+                          {
+                              type : 'category',
+                              data : ["Day1","Day2","Day3","Day4","Day5","Day6","Day7","PAST"]
+                          }
+                      ],
+                      yAxis : [
+                          {
+                              type : 'value'
+                          }
+                      ],
+                      series : [
+                          {
+                              "name":"销量",
+                              "type":"bar",
+                              "data":getDa
+                          }
+                      ]
+                  };
+
+                  // 为echarts对象加载数据
+                  myChart.setOption(option);
+                }
+
+                dataArray = new Array()
+
+                $.get("http://127.0.0.1:8000/data/",function(returnData){
+                  returnData = returnData.split('-')
+                  for(i in returnData){
+                    dataArray.push(parseInt(returnData[i]))
+                  }
+                  newFunc(dataArray)
+                })
+
+            }
+        );
+    </script>
+
+
+
+
+
+
+
+
+  </body>
+
+</html>
